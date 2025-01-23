@@ -17,11 +17,15 @@ public class weather {
     private static final String API_KEY = "&appid=04afad80f7b95195a3a9e49fa1659949";
 
     public static void main(String[] args) {
+        askZipShowWeather();
+    }
+
+    public static void askZipShowWeather() {
         try (Scanner kbReader = new Scanner(System.in)) {
             System.out.println("Enter zip code: ");
             String zip = kbReader.next();
-            System.out.println("Lets check Weather for " + zip + ":");
             String data = getWeatherByZipcode(zip);
+            System.out.println("Lets check Weather for " + zip + ":");
             System.out.println(data);
         }
     }
