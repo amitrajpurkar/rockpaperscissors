@@ -1,10 +1,16 @@
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
+import java.util.Properties;
 import java.util.Scanner;
 
 import com.google.gson.Gson;
@@ -14,7 +20,7 @@ import com.google.gson.JsonParser;
 
 public class weather {
     private static final String BASE_URL = "https://api.openweathermap.org/";
-    private static final String API_KEY = "&appid=04afad80f7b95195a3a9e49fa1659949";
+    private static final String API_PARAM_STRING = "&appid=";
 
     public static void main(String[] args) {
         askZipShowWeather();
@@ -40,7 +46,7 @@ public class weather {
 
     private static String getWeatherByCoords(String lat, String lon) {
         String params = String.format( "data/2.5/weather?lat=%s&lon=%s", lat, lon);
-        String url = BASE_URL + params + API_KEY;
+        String url = BASE_URL + params + getApiKey();
         HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).build();
         HttpClient client = HttpClient.newHttpClient();
         HttpResponse<String> response = null;
@@ -62,7 +68,7 @@ public class weather {
 
     private static List<String> getCityCoordinates(String zip){
         String params = String.format("geo/1.0/zip?zip=%s,US", zip) ;
-        String url = BASE_URL + params + API_KEY;
+        String url = BASE_URL + params + getApiKey();
         HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).build();
         HttpClient client = HttpClient.newHttpClient();
         HttpResponse<String> response = null;
@@ -82,5 +88,25 @@ public class weather {
         coords.add(obj.get("lat").toString());
         coords.add(obj.get("lon").toString());
         return coords;
+    }
+
+    private static String getApiKey() {
+        Path path = Paths.get("src/main/resources/application.properties");
+        StringBuffer apiKey = new StringBuffer("&appid=");
+        try {
+            FileInputStream fis = new FileInputStream(path.toFile());
+            Properties appProperties = new Properties();
+            appProperties.load(fis);
+            String encodedKey = appProperties.getProperty("apiKey");
+            String key = Base64.getDecoder().decode(encodedKey).toString();
+
+            String key2 = appProperties.getProperty("open.weather.api.key");
+
+            apiKey.append(key2);
+
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+        return apiKey.toString();
     }
 }
