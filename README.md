@@ -17,3 +17,16 @@ trying out examples for:
 * at future state will extend this for simple web app or an API
 * separate CLI interfacing method from core service methods
 * read property files -- to save config properties there instead of Code files
+* use Base64 encode/decode for the keys and passwords etc.
+
+
+### Java usage
+* use gradle to manage dependencies
+* gradle init is using config 4
+* for building use ```gradle clean build```
+* to run test classes use ```gradle test```
+* to run the code or main class use ```gradle --quiet --console=plain run```
+
+
+### Python usage
+* use Poetry to manage dependencies and virtual environment
